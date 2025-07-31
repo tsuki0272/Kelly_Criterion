@@ -6,7 +6,7 @@ This project simulates the long-term performance of **fractional Kelly betting s
 - Optimal betting fractions across probabilities
 - Statistical significance of results
 
-![Mean Probability Bankroll History Graphs](prob_bankroll_growth.png)
+![Mean Probability Bankroll History Graphs](images/prob_bankroll_growth.png)
 
 ## Motivation
 The Kelly Criterion is a formula for optimizing long-term bankroll growth.
@@ -28,7 +28,7 @@ This project answers:
   - Manual binomial probability calculation for significance
 - **Reproducibility**: seeds to retain reproducibility, uniform sampling from seeds list to reduce sequential bias
 
-![Top Performing Fractions Across Probabilities](top_performing_fracs.png)
+![Top Performing Fractions Across Probabilities](images/top_performing_fracs.png)
 
 ## Key Results
 ### 1. **Bankroll Growth by Win Probability**
@@ -43,4 +43,4 @@ This project answers:
 - Chi-squared tests confirm that top-performing fractions are **not due to chance**.
 - Probability of 50+ wins in one bin under uniformity: ~3.9e-22 → **effect is real**.
 
-![Chi Squared Test for Each Probability](chi_squared.png)
+![Chi Squared Test for Each Probability](images/chi_squared.png)
