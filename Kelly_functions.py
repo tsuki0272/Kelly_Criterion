@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 # Default variables
 default_num_tries = 10
@@ -12,7 +11,7 @@ default_prior_wins = 1
 default_prior_losses = 1
 default_estimated_win_prob = 0.5
 
-def too_big(bankroll):
+def too_big(bankroll): # Checks if a bankroll value exceeds an upper bound that may cause numerical overflow.
     return bankroll > (1.7e250)
 
 def full_kelly( # mathematically optimal, bad in practice
@@ -21,6 +20,21 @@ def full_kelly( # mathematically optimal, bad in practice
         win_prob = default_win_prob, 
         win_odds = default_win_odds, 
         seed = default_seed): 
+    """
+    Simulates bets using the full Kelly Criterion strategy over a fixed number of trials.
+
+    Inputs:
+        num_tries: Integer, total number of bets to simulate
+        bankroll: Float, starting bankroll
+        win_prob: Float between 0 and 1, true win probability of a single bet
+        win_odds: Float, payout multiplier on a winning bet
+        seed: Integer, seed for NumPy's random number generator to ensure reproducibility
+
+    Output:
+        values: numpy array of bankroll values after each bet, length equal to num_tries
+        If bankroll exceeds too_big() limit, simulation halts and remaining values repeat the last valid value
+        This is done to prevent issues when calculating mean bankroll in Calculations.py
+    """
     np.random.seed(seed)
 
     values = []
@@ -63,6 +77,22 @@ def fractional_kelly( # used as benchmark due to superior survivability and grow
         win_odds = default_win_odds, 
         fraction = default_fraction, 
         seed = default_seed): 
+    """
+    Simulates betting using a fractional Kelly Criterion strategy, which mitigates volatility at the cost of slower growth.
+
+    Inputs:
+        num_tries: Integer, total number of bets to simulate
+        bankroll: Float, starting bankroll
+        win_prob: Float between 0 and 1, true win probability of a single bet
+        win_odds: Float, payout multiplier on a winning bet
+        fraction: Float between 0 and 1, fraction of the full Kelly bet to bet each round
+        seed: Integer, seed for NumPy's random number generator to ensure reproducibility
+
+    Output:
+        values: numpy array of bankroll values after each bet, length equal to num_tries
+        If bankroll exceeds too_big() limit, simulation halts and remaining values repeat the last valid value
+        This is done to prevent issues when calculating mean bankroll in Calculations.py
+    """
     np.random.seed(seed)
 
     values = []

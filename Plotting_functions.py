@@ -3,6 +3,20 @@ import numpy as np
 import math
 
 def create_bankroll_history_plot(title = '', prob = 0, rows = 1, columns = 1, plot_num = 1, line = None):
+    """
+    Sets up a single subplot for visualizing bankroll history in a multi-plot figure layout.
+
+    Inputs:
+        title: String, title of current subplot. If `prob` is provided and non-zero, 
+            this will be overridden to include the probability value
+        prob: Float (optional), if non-zero, sets a title indicating win probability
+        rows, columns: Integer, # of rows and columns in plotting grid
+        plot_num: Integer, current index of plot within plotting grid
+        line: Float (optional), Y-axis value at which a line is drawn
+
+    Output:
+        None. Configures and formats the current subplot
+    """
     plt.subplot(rows, columns, plot_num)
     plt.title(title)
     if(prob != 0):
@@ -21,7 +35,6 @@ def count_optimal_fractions(top_fracs, fractions, probabilities):
         top_fracs: List of lists, each sublist contains dicts with simulation results for one seed
         fractions: List or array of fractions used in the simulation
         probabilities: List or array of probabilities used
-        tolerance: Numerical tolerance for floating point equality
     
     Outputs: List with 2 indexes
         [0] overall_counter: Dict of overall best fraction frequencies
@@ -46,6 +59,19 @@ def count_optimal_fractions(top_fracs, fractions, probabilities):
     return overall_counter, per_prob_counter
 
 def plot_optimal_fractions(rows = 1, columns = 1, plot_num = 1, max_counter = {}, title = '', line = None):
+    """
+    Creates a subplot of a barplot grid of optimal fractions for a given probability.
+
+    Inputs:
+        rows, columns: Integer, # of rows and columns in plotting grid
+        plot_num: Integer, current index of plot within plotting grid
+        max_counter: Dictionary, contains frequencies of top performing fractions for one probability
+        title: String, title of current subplot
+        line: Float (optional), Y-axis value at which a line is drawn
+    
+    Outputs:
+        Barplot sublot at a certain position in a plotting grid showing distributions of top fractions
+    """
     colors = ['orange', 'cornflowerblue', 'greenyellow', 'hotpink', 'violet', 'mediumseagreen']
     plt.subplot(rows, columns, plot_num)
     plt.bar([str(f'{max_val:.2}') for max_val in max_counter.keys()], list(max_counter.values()), color=colors[(plot_num - 1)% 6])

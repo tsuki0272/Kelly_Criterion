@@ -1,54 +1,50 @@
 import numpy as np
 
-def find_mean_bankroll_histories_for_prob(top_fracs, probabilities) :
+def find_mean_bankroll_histories(top_fracs, strategy_keys, strategy_label) :
+    """
+    Computes the mean bankroll history for each strategy (e.g., probability or fraction).
+
+    Inputs:
+        top_fracs: List of lists of dicts, each containing 'bankroll history' and strategy info
+        strategy_keys: List of strategy values (e.g., all probabilities or all fractions)
+        strategy_label: String, either 'probability' or 'fraction', specifying which key to extract
+
+    Output:
+        bankrolls: Dict[strategy -> np.array], mapping each strategy value to the mean bankroll history
+    """
     # mean = sum(x) / n
-    prob_bankrolls = { # create empty dictionary containing spaces for bankroll histories
-        prob: np.zeros(len(top_fracs[0][0]['bankroll history'])) 
-        for prob in probabilities
+    bankrolls = { # create empty dictionary containing spaces for bankroll histories
+        key: np.zeros(len(top_fracs[0][0]['bankroll history'])) 
+        for key in strategy_keys
     }
-    counts = {prob: 0 for prob in probabilities} # total number of elements
+    counts = {key: 0 for key in strategy_keys} # total number of elements
     
     for value in top_fracs:
         for dict in value: # add all values to prob_bankrolls
-            prob = dict['probability']
-            prob_bankrolls[prob] += dict['bankroll history']
-            counts[prob] += 1
-    for prob in probabilities:
-        prob_bankrolls[prob] /= counts[prob]
-    return prob_bankrolls
+            key = dict[strategy_label]
+            bankrolls[key] += dict['bankroll history']
+            counts[key] += 1
+    for key in strategy_keys:
+        bankrolls[key] /= counts[key]
+    return bankrolls
 
-def find_mean_bankroll_histories_for_frac(top_fracs, fractions) :
-    # mean = sum(x) / n
-    frac_bankrolls = { # create empty dictionary containing spaces for bankroll histories
-        frac: np.zeros(len(top_fracs[0][0]['bankroll history'])) 
-        for frac in fractions
-    }
-    counts = {frac: 0 for frac in fractions}
-    counts
+def find_max_within_range(start, stop, bankrolls, strategies):
+    """
+    Finds maximum bankroll value within a given index range across multiple strategies.
 
-    for value in top_fracs:
-            for dict in value: # add all values to prob_bankrolls
-                frac = dict['fraction']
-                frac_bankrolls[frac] += dict['bankroll history']
-                counts[frac] += 1
-    for frac in fractions:
-        frac_bankrolls[frac] /= counts[frac]
-    return frac_bankrolls
+    Inputs:
+        start: Integer, starting index (inclusive) of range
+        stop: Integer, stopping index (exclusive) of range
+        bankrolls: Dict[strategy -> list of bankroll values] by probability or fraction
+        strategies: List of keys (floats or strings) corresponding to the strategies to consider
 
-def find_max_within_range_for_prob(start, stop, prob_bankrolls, probabilities):
+    Output:
+        max_bankroll: Float, highest bankroll value observed within the specified range across all strategies
+    """
     # finds the highest value of the bankroll history within a certain range
     max_bankroll = 0
-    for prob in probabilities:
-        curr_max = max(prob_bankrolls[prob][start:int(stop)])
-        if(curr_max > max_bankroll):
-            max_bankroll = curr_max
-    return max_bankroll
-
-def find_max_within_range_for_frac(start, stop, frac_bankrolls, fractions):
-    # finds the highest value of the bankroll history within a certain range
-    max_bankroll = 0
-    for frac in fractions:
-        curr_max = max(frac_bankrolls[frac][start:int(stop)])
+    for strat in strategies:
+        curr_max = max(bankrolls[strat][start:int(stop)])
         if(curr_max > max_bankroll):
             max_bankroll = curr_max
     return max_bankroll
@@ -75,7 +71,7 @@ def get_frequency_stats(top_fracs):
     mean = total / n
     return mean, n, counts
 
-def chi_squared_test(observed, predicted):
+def chi_squared_test(observed, predicted): # Computes the chi-squared test statistic comparing observed and expected frequencies.
     chi_squared = 0
     for i in range(len(observed)):
         obs = observed[i]
